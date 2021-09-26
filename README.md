@@ -1,2 +1,2 @@
-ET-297
-Каталог гитар
+# rest-guitar-catalog
+Spring (Boot, Web, Security, Data), JWT, Redis
