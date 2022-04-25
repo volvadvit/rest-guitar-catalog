@@ -5,6 +5,8 @@ import com.zuzex.vvolkov.constants.ResponseMapper;
 import com.zuzex.vvolkov.model.user.AppUser;
 import com.zuzex.vvolkov.service.UserService;
 import com.zuzex.vvolkov.utils.TokenUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

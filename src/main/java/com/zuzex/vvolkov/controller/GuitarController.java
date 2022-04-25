@@ -11,6 +11,7 @@ import com.zuzex.vvolkov.service.FeaturesService;
 import com.zuzex.vvolkov.service.GuitarService;
 import com.zuzex.vvolkov.service.ManufacturerService;
 import com.zuzex.vvolkov.service.UserService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
@@ -58,8 +59,7 @@ public class GuitarController {
 
 
     @GetMapping("/search")
-    public @ResponseBody
-    ResponseEntity<ResponseMapper> searchGuitarsByManufacturer(
+    public @ResponseBody ResponseEntity<ResponseMapper> searchGuitarsByManufacturer(
             @RequestParam(name = "model", required = false) String model,
             @RequestParam(name = "price_from", required = false) Double priceFrom,
             @RequestParam(name = "price_to", required = false) Double priceTo,
@@ -92,8 +92,7 @@ public class GuitarController {
     }
 
     @GetMapping("/all")
-    public @ResponseBody
-    ResponseEntity<ResponseMapper> getAllGuitars() {
+    public @ResponseBody ResponseEntity<ResponseMapper> getAllGuitars() {
         return ResponseEntity.ok().body(new ResponseMapper(HttpStatus.OK.value(),
                 "list of all guitars", guitarRepo.findAll()));
     }

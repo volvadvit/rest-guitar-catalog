@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +22,15 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("/v2/api-docs/**");
+//        web.ignoring().antMatchers("/swagger.json");
+//        web.ignoring().antMatchers("/swagger-ui.html");
+//        web.ignoring().antMatchers("/swagger-resources/**");
+//        web.ignoring().antMatchers("/webjars/**");
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         AuthenticationFilter authenticationFilter =
@@ -32,8 +42,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-                .antMatchers("/login/**").permitAll()
-
+                .antMatchers(GET, "/login/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/v2/**").permitAll()
                 .antMatchers(POST, "/admin/role/update/**").hasAnyAuthority(Role.ADMIN.name())
                 .antMatchers(POST, "/admin/guitars/add/**").hasAnyAuthority(Role.ADMIN.name())
 
