@@ -48,7 +48,7 @@ public class UserController {
 
     @GetMapping("/token/refresh")
     public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        return TokenUtils.updateAccessToken(request.getHeader(AUTHORIZATION), userService);
+        return TokenUtils.getInstance().updateAccessToken(request.getHeader(AUTHORIZATION), userService);
     }
 
     @GetMapping("/{username}/guitars")

@@ -33,40 +33,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        AuthenticationFilter authenticationFilter =
-                new AuthenticationFilter(authenticationManagerBean());
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManagerBean());
         authenticationFilter.setFilterProcessesUrl("/login");
 
         http
-                .csrf().disable()
+                .cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeRequests()
-                .antMatchers(GET, "/login/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/v2/**").permitAll()
-                .antMatchers(POST, "/admin/role/update/**").hasAnyAuthority(Role.ADMIN.name())
-                .antMatchers(POST, "/admin/guitars/add/**").hasAnyAuthority(Role.ADMIN.name())
-
-                .antMatchers(POST, "/guitar/add/**").hasAnyAuthority(Role.MANAGER.name())
-                .antMatchers(POST, "/guitar/search/**").hasAnyAuthority(Role.USER.name())
-                .antMatchers(GET, "/guitar/*/users/**").hasAnyAuthority(Role.USER.name())
-                .antMatchers(GET, "/guitar/all/").permitAll()
-                .antMatchers(GET, "/guitar/compare/").permitAll()
-                .antMatchers(GET, "/guitar/**").permitAll()
-
-                .antMatchers("/user/save/**").permitAll()
-                .antMatchers(POST, "/user/guitars/add").hasAnyAuthority(Role.USER.name())
-                .antMatchers(GET, "/user/*/guitars").permitAll()
-                .antMatchers(GET, "/user/token/refresh/**").permitAll()
-                .antMatchers(GET, "/user/all/**").hasAnyAuthority(Role.MANAGER.name())
-
-                .anyRequest().authenticated()
-        .and()
+                .and()
+//                .authorizeRequests()
+//                .antMatchers("/login/**").permitAll()
+//                .antMatchers("/webjars/**").permitAll()
+//                .antMatchers("/swagger-ui/**").permitAll()
+//                .antMatchers("/swagger-resources/**").permitAll()
+//                .antMatchers("/v2/**").permitAll()
+//                .antMatchers(POST, "/admin/role/update/**").hasAnyAuthority(Role.ADMIN.name())
+//                .antMatchers(POST, "/admin/guitars/add/**").hasAnyAuthority(Role.ADMIN.name())
+//
+//                .antMatchers(POST, "/guitar/add/**").hasAnyAuthority(Role.MANAGER.name())
+//                .antMatchers(POST, "/guitar/search/**").hasAnyAuthority(Role.USER.name())
+//                .antMatchers(GET, "/guitar/*/users/**").hasAnyAuthority(Role.USER.name())
+//                .antMatchers(GET, "/guitar/all/").permitAll()
+//                .antMatchers(GET, "/guitar/compare/").permitAll()
+//                .antMatchers(GET, "/guitar/**").permitAll()
+//
+//                .antMatchers("/user/save/**").permitAll()
+//                .antMatchers(POST, "/user/guitars/add").hasAnyAuthority(Role.USER.name())
+//                .antMatchers(GET, "/user/*/guitars").permitAll()
+//                .antMatchers(GET, "/user/token/refresh/**").permitAll()
+//                .antMatchers(GET, "/user/all/**").hasAnyAuthority(Role.MANAGER.name())
+                .authorizeRequests()
+                .anyRequest().permitAll()
+                .and()
                 .addFilter(authenticationFilter)
-                .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);;
+                .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

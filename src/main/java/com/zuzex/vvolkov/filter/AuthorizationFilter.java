@@ -34,7 +34,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
-                    TokenUtils.verifiedAccessToken(authorizationHeader);
+                    TokenUtils.getInstance().verifiedAccessToken(authorizationHeader);
 
                     log.info("token is verified");
 

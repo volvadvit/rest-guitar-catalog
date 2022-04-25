@@ -12,11 +12,10 @@ import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,32 +24,36 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenUtils {
 
-    private static final TokenUtils instance = new TokenUtils();
+    public static final TokenUtils instance = new TokenUtils();
 
-    private final String redisHost = "localhost";
-    private final int redisPort = 6379;
-    private final String redisPassword = "sXe-123";
-    private final int redisDatabase = 0;
+    private TokenUtils() {
 
-    private final static String jwtSecret = "guitar-secret-key";
-    private final static int accessTokenExp = 300000; // ms
-    private final static int refreshTokenExp = 600; // sec
+    }
+
+    public static TokenUtils getInstance() {
+        syncCommands = setUpRedis();
+        return instance;
+    }
+
+    private static String redisHost = "localhost";
+    private static int redisPort = 6379;
+    private static String redisPassword = "sXe--123";
+    private static int redisDatabase = 0;
+    private static String jwtSecret = "guitar-secret-key";
+
+    @Value("${token.access.expr.ms}")
+    private final int accessTokenExp = 300000; // ms
+    @Value("${token.refresh.expr.sec}")
+    private final int refreshTokenExp = 600; // sec
 
     private static final Algorithm algorithm = Algorithm.HMAC256(jwtSecret.getBytes());
     private static final JWTVerifier verifier = JWT.require(algorithm).build();
 
     private static final Integer bearerLength = "Bearer ".length();
+
     private static RedisCommands<String, String> syncCommands;
 
-    private TokenUtils() {
-        syncCommands = setUpRedis();
-    }
-
-    public static TokenUtils getInstance() {
-        return instance;
-    }
-
-    public static Map<String, String> generateJwtToken(String username, List<String> roles) {
+    public Map<String, String> generateJwtToken(String username, List<String> roles) {
         String accessToken = JWT.create()
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExp))
@@ -74,7 +77,7 @@ public class TokenUtils {
                 "refresh_token", refreshToken);
     }
 
-    public static void verifiedAccessToken(String authorizationHeader) {
+    public void verifiedAccessToken(String authorizationHeader) {
         String token = authorizationHeader.substring(bearerLength);
         DecodedJWT decodedJWT = verifier.verify(token);
 
@@ -89,7 +92,7 @@ public class TokenUtils {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
-    public static Map<String, String> updateAccessToken(String authorizationHeader, UserService userService) {
+    public Map<String, String> updateAccessToken(String authorizationHeader, UserService userService) {
         String username = getUsernameFromToken(authorizationHeader);
 
         String tokenFromRequest = authorizationHeader.substring(bearerLength);
@@ -108,7 +111,7 @@ public class TokenUtils {
         }
     }
 
-    public static String getUsernameFromToken(String authorizationHeader) {
+    public String getUsernameFromToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(bearerLength);
             DecodedJWT decodedJWT = verifier.verify(token);
@@ -118,12 +121,19 @@ public class TokenUtils {
         }
     }
 
-    private RedisCommands<String, String> setUpRedis() {
+    private static RedisCommands<String, String> setUpRedis() {
         RedisURI localhost = RedisURI.Builder
                 .redis(redisHost, redisPort).withPassword(redisPassword).withDatabase(redisDatabase).build();
         RedisClient redisClient = RedisClient.create(localhost);
 
-        StatefulRedisConnection<String, String> connection = redisClient.connect();
-        return connection.sync();
+        try {
+            StatefulRedisConnection<String, String> connection = redisClient.connect();
+            return connection.sync();
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            ex.printStackTrace();
+        }
+        log.error("Couldn't connect to Redis, host: {}, port: {}, pwd: {}", redisHost, redisPort, redisPassword);
+        throw new RuntimeException("Couldn't connect to Redis");
     }
 }

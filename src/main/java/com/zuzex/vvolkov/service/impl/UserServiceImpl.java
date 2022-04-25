@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public AppUser addGuitarsToUserByUser(List<Long> guitarsId, String authorizationHeader) {
 
-        String username = TokenUtils.getUsernameFromToken(authorizationHeader);
+        String username = TokenUtils.getInstance().getUsernameFromToken(authorizationHeader);
 
         if (guitarsId != null && username != null && !username.isEmpty()) {
             Optional<AppUser> optional = userRepo.findByUsername(username);
