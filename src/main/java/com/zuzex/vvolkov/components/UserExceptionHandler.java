@@ -37,5 +37,4 @@ public class UserExceptionHandler {
                 new ResponseMapper(HttpStatus.BAD_REQUEST.value(),
                         "user: " + e.getMessage() + " already exists", e.getMessage()));
     }
-
 }

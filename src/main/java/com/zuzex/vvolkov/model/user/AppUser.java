@@ -16,14 +16,22 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "users")
 public class AppUser {
+    public AppUser(String name, String username, String password, Set<Role> roles) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     @NotNull
     @Column(unique = true)
     private String username;
+
     @NotNull
     private String password;
 
@@ -34,16 +42,8 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "guitar_id", referencedColumnName = "id"))
     List<Guitar> guitars;
 
-
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-
-    public AppUser(String name, String username, String password, Set<Role> roles) {
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-    }
 }

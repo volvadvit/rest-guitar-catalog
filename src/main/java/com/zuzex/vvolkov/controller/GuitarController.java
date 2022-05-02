@@ -11,16 +11,14 @@ import com.zuzex.vvolkov.service.FeaturesService;
 import com.zuzex.vvolkov.service.GuitarService;
 import com.zuzex.vvolkov.service.ManufacturerService;
 import com.zuzex.vvolkov.service.UserService;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +31,11 @@ public class GuitarController {
     private final GuitarService guitarService;
     private final FeaturesService featureService;
     private final ManufacturerService manufacturerService;
-
     private final UserService userService;
     private final UserAssembler userAssembler;
 
     @PostMapping("/add")
+    @ApiOperation(value = "Add new guitar model to database")
     public ResponseEntity<ResponseMapper> addNewGuitar(
             @RequestBody @Valid Guitar guitar)
     {
@@ -57,8 +55,9 @@ public class GuitarController {
         );
     }
 
-
     @GetMapping("/search")
+    @ApiOperation(value = "Search guitar in database by request params",
+            notes = "No needed to specified and send all of them")
     public @ResponseBody ResponseEntity<ResponseMapper> searchGuitarsByManufacturer(
             @RequestParam(name = "model", required = false) String model,
             @RequestParam(name = "price_from", required = false) Double priceFrom,
@@ -86,6 +85,7 @@ public class GuitarController {
     }
 
     @GetMapping("/{guitar_id}")
+    @ApiOperation(value = "Find guitar in database by id")
     public ResponseEntity<ResponseMapper> show(@PathVariable("guitar_id") Long id) {
         return ResponseEntity.ok().body(new ResponseMapper(HttpStatus.OK.value(),
                 "guitar found", guitarService.getById(id)));
@@ -98,6 +98,7 @@ public class GuitarController {
     }
 
     @GetMapping("/compare/{guitar_ids}")
+    @ApiOperation(value = "Get list of guitars id as path variable list, to compare them")
     public ResponseEntity<ResponseMapper> compareMany(
             @PathVariable("guitar_ids") List<Long> guitarIds)
     {
@@ -106,6 +107,7 @@ public class GuitarController {
     }
 
     @GetMapping("/{guitar_id}/users")
+    @ApiOperation(value = "Get list of users, that have specified guitar in their bag")
     public ResponseEntity<ResponseMapper> getGuitarUsersById(@PathVariable("guitar_id") Long guitarId) {
 
         List<AppUser> userList = guitarService.findUsersByGuitarId(guitarId);

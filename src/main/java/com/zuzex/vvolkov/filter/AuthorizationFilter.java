@@ -3,7 +3,6 @@ package com.zuzex.vvolkov.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzex.vvolkov.constants.ResponseMapper;
 import com.zuzex.vvolkov.utils.TokenUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,7 +17,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-@RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Override

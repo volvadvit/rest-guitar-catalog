@@ -40,6 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
+    @ApiOperation(value = "Method to register/save user")
     public ResponseEntity<ResponseMapper> saveUser(@RequestBody @Validated AppUser appUser) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/save").toUriString());
         return ResponseEntity.created(uri).body(new ResponseMapper(HttpStatus.CREATED.value(),
@@ -47,17 +48,20 @@ public class UserController {
     }
 
     @GetMapping("/token/refresh")
+    @ApiOperation("Method to generate new pair of access/refresh tokens")
     public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return TokenUtils.getInstance().updateAccessToken(request.getHeader(AUTHORIZATION), userService);
     }
 
     @GetMapping("/{username}/guitars")
+    @ApiOperation("Get guitars list from bag of specified user")
     public ResponseEntity<ResponseMapper> getUserGuitars(@PathVariable("username") String username) {
         return ResponseEntity.ok(new ResponseMapper(HttpStatus.OK.value(),
                 "list of user guitars", userService.getGuitars(username)));
     }
 
     @PostMapping("/guitars/add")
+    @ApiOperation("Add guitar to bag of currently logged user")
     public ResponseEntity<ResponseMapper> addGuitarsToUserByUser(
             @RequestBody List<Long> guitarsId, HttpServletRequest request)
     {

@@ -22,7 +22,7 @@ public class AdminController {
     private final UserService userService;
 
     @PostMapping("/guitars/add")
-    @ApiOperation(value = "add guitar to special user")
+    @ApiOperation(value = "Add guitar to specified user")
     public ResponseEntity<ResponseMapper> addGuitarsToUserByAdmin(
             @RequestBody List<Long> guitarsId, @RequestParam String username)
     {
@@ -31,7 +31,7 @@ public class AdminController {
     }
 
     @PostMapping("/role/update")
-    @ApiOperation(value = "update user role")
+    @ApiOperation(value = "Update specified user role", response = ResponseMapper.class)
     public ResponseEntity<ResponseMapper> updateUserRole(@RequestBody RoleToUsernameForm form) {
         userService.addRoleToUser(form.getUsername(), form.getRole());
         return ResponseEntity.ok(new ResponseMapper(HttpStatus.OK.value(),

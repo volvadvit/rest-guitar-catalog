@@ -123,7 +123,8 @@ public class TokenUtils {
 
     private static RedisCommands<String, String> setUpRedis() {
         RedisURI localhost = RedisURI.Builder
-                .redis(redisHost, redisPort).withPassword(redisPassword).withDatabase(redisDatabase).build();
+                .redis(redisHost, redisPort).withPassword(redisPassword.toCharArray())
+                .withDatabase(redisDatabase).build();
         RedisClient redisClient = RedisClient.create(localhost);
 
         try {
